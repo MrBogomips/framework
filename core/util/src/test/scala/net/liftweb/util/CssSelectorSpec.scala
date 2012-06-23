@@ -21,6 +21,7 @@ import org.specs.Specification
 
 import common._
 import BindHelpers._
+import util.{ElemSelector, ClassSelector}
 
 
 /**
@@ -115,8 +116,6 @@ object CssSelectorSpec extends Specification("CSS Selector Specification")  {
       IdSelector("foo", Full(AttrRemoveSubNode("woof")))
     }
 
-
-
     "select attr/val pair" in {
       CssSelectorParser.parse("frog=dog") must_==
       Full(AttrSelector("frog", "dog", Empty))
@@ -199,6 +198,13 @@ object CssSelectorSpec extends Specification("CSS Selector Specification")  {
       CssSelectorParser.parse(".foo  [woof] ").open_! must_== 
       ClassSelector("foo", Full(AttrSubNode("woof")))
     }
+
+    "select multiple depth" in {
+      CssSelectorParser.parse("div .foo [woof] ").open_! must_==
+        EnclosedSelector(ElemSelector("div", Empty), ClassSelector("foo", Full(AttrSubNode("woof"))))
+    }
+
+
   }
 
 }
