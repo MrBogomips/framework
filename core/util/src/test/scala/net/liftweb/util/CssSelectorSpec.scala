@@ -20,8 +20,6 @@ package util
 import org.specs.Specification
 
 import common._
-import BindHelpers._
-import util.{ElemSelector, ClassSelector}
 
 
 /**
@@ -39,7 +37,7 @@ object CssSelectorSpec extends Specification("CSS Selector Specification")  {
     }
 
     "a selector with cruft at the end must fail" in {
-      CssSelectorParser.parse("#foo I like yaks").isDefined must_== false
+      CssSelectorParser.parse("#foo I li**ke yaks").isDefined must_== false
     }
 
     ":yak must not parse" in {
@@ -150,7 +148,12 @@ object CssSelectorSpec extends Specification("CSS Selector Specification")  {
 
     "select name/val pair" in {
       CssSelectorParser.parse("@dog -*") must_==
-      Full(NameSelector("dog", Full(PrependKidsSubNode())))
+        Full(NameSelector("dog", Full(PrependKidsSubNode())))
+    }
+
+    "select name/val pair surround" in {
+      CssSelectorParser.parse("@dog <*>") must_==
+        Full(NameSelector("dog", Full(SurroundKids())))
     }
 
     "select name/val pair" in {
@@ -202,6 +205,16 @@ object CssSelectorSpec extends Specification("CSS Selector Specification")  {
     "select multiple depth" in {
       CssSelectorParser.parse("div .foo [woof] ").open_! must_==
         EnclosedSelector(ElemSelector("div", Empty), ClassSelector("foo", Full(AttrSubNode("woof"))))
+    }
+
+    "select multiple depth with star" in {
+      CssSelectorParser.parse("div .foo * ").open_! must_==
+        EnclosedSelector(ElemSelector("div", Empty), ClassSelector("foo", Full(KidsSubNode())))
+    }
+
+    "select multiple super depth with star" in {
+      CssSelectorParser.parse("span div .foo * ").open_! must_==
+        EnclosedSelector(ElemSelector("span", Empty), EnclosedSelector(ElemSelector("div", Empty), ClassSelector("foo", Full(KidsSubNode()))))
     }
 
 
