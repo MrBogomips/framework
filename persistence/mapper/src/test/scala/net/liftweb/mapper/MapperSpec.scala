@@ -42,20 +42,6 @@ object MapperSpec extends Specification("Mapper Specification") {
 
   def providers = DbProviders.H2MemoryProvider :: Nil
 
-  /*
-   private def logDBStuff(log: DBLog, len: Long) {
-   println(" in log stuff "+log.getClass.getName)
-   log match {
-   case null =>
-   case _ => println(log.allEntries)
-   }
-   }
-
-   DB.addLogFunc(logDBStuff)
-   */
-
-//  if (!DB.loggingEnabled_? && doLog) DB.addLogFunc(logDBStuff)
-
   providers.foreach(provider => {
 
     ("Mapper for " + provider.name) should {
